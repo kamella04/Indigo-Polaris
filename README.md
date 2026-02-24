@@ -15,7 +15,8 @@ pip install -r requirements.txt
 - **ALERT_EMAILS** – List of email addresses to receive alerts
 - **THRESHOLDS** – Target values for each metric (alert when within `PROXIMITY_PERCENT`)
 - **PROXIMITY_PERCENT** – How close to the threshold before alerting (e.g., 10 = alert at 90% of target)
-- **YOUTUBE_CHANNEL_ID**, **YOUTUBE_VIDEO_IDS** – Your channel and videos to track
+- **YOUTUBE_CHANNEL_ID** – Your channel
+- **YOUTUBE_VIDEOS** – List of `{"id": "video_id", "title": "Video Title"}` to track
 - **INSTAGRAM_USER_ID**, **FACEBOOK_PAGE_ID**, **SPOTIFY_ARTIST_ID** – Platform IDs
 
 ### 3. Set environment variables
@@ -35,6 +36,19 @@ python monitor.py
 ```
 
 It checks metrics every `CHECK_INTERVAL_MINUTES` (default: 60). Alerts are sent only once per metric/threshold to avoid spam.
+
+## YouTube Video Checkpoint Rules
+
+View alerts use different rules based on publish date:
+
+**New videos (published today):**
+- Checkpoints: 100k → 500k → 1M → 2M → 3M → …
+- Alert when within **50k views** of checkpoint (for under 1M) or **100k views** (for 1M+)
+
+**Older videos (published before today):**
+- **Under 1M views:** 100k, 500k, 1M — alert when **50k** views left
+- **1M–10M views:** every million — alert when **100k** views left
+- **Over 10M views:** 15M, 20M, 25M… (every 5M) — alert when **200k** views left
 
 ## API Notes
 
