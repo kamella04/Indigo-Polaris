@@ -1,9 +1,8 @@
 """
 Indigo Polaris Metrics Monitor
 
-Checks YouTube videos, subscribers, Instagram, Facebook, and Spotify metrics periodically.
-Sends email alerts when any metric gets close to its configured threshold.
-YouTube videos use per-video checkpoint rules (new vs old, view-based).
+Checks YouTube videos, subscribers, Instagram, and Facebook followers periodically.
+Sends email alerts when any metric gets close to its checkpoint.
 """
 
 from __future__ import annotations
@@ -15,10 +14,13 @@ from pathlib import Path
 
 import config
 from email_sender import send_alert, send_video_alert
+from followers_checkpoints import (
+    get_next_follower_checkpoint,
+    should_alert_followers,
+)
 from fetchers import (
     fetch_facebook_followers,
     fetch_instagram_followers,
-    fetch_spotify_listeners,
     fetch_youtube_subscribers,
     fetch_youtube_video_stats,
 )
@@ -52,14 +54,6 @@ def save_sent_alert(alert_key: tuple) -> None:
     sent = load_sent_alerts()
     sent.add(alert_key)
     ALERTS_SENT_FILE.write_text(json.dumps([list(x) for x in sent], indent=2))
-
-
-def is_near_threshold(current: int | None, threshold: int) -> bool:
-    """True if current is within PROXIMITY_PERCENT of threshold."""
-    if current is None or threshold <= 0:
-        return False
-    pct = config.PROXIMITY_PERCENT / 100
-    return current >= threshold * (1 - pct)
 
 
 def run_check() -> None:
@@ -96,31 +90,36 @@ def run_check() -> None:
                 else:
                     logger.warning(f"Failed to send alert for \"{title}\"")
 
-    # --- Other metrics (subscribers, Instagram, Facebook, Spotify) ---
+    # --- Follower metrics (YouTube, Instagram, Facebook) ---
+    # Checkpoints: under 1M = every 100k (5k left), over 1M = every 1M (15k left)
     fetchers = {
         "youtube_subscribers": fetch_youtube_subscribers,
         "instagram_followers": fetch_instagram_followers,
         "facebook_followers": fetch_facebook_followers,
-        "spotify_listeners": fetch_spotify_listeners,
     }
 
     for metric_key, fetch_fn in fetchers.items():
-        threshold = config.THRESHOLDS.get(metric_key)
-        if threshold is None:
+        current = fetch_fn()
+        if current is None:
             continue
 
-        current = fetch_fn()
-        if current is not None:
-            logger.info(f"{metric_key}: {current:,} (threshold: {threshold:,})")
+        cp = get_next_follower_checkpoint(current)
+        if cp is None:
+            continue
 
-        alert_key = (metric_key, threshold)
+        target, proximity = cp.target, cp.proximity
+        alert_key = (metric_key, target)
         if alert_key in sent_alerts:
             continue
 
-        if is_near_threshold(current, threshold):
-            if send_alert(metric_key, current or 0, threshold):
-                logger.info(f"Alert sent: {metric_key} approaching {threshold:,}")
+        if should_alert_followers(current, target, proximity):
+            logger.info(
+                f"{metric_key}: {current:,}, approaching {target:,} "
+                f"(within {proximity:,})"
+            )
+            if send_alert(metric_key, current, target):
                 save_sent_alert(alert_key)
+                logger.info(f"Alert sent: {metric_key} approaching {target:,}")
             else:
                 logger.warning(f"Failed to send alert for {metric_key}")
 

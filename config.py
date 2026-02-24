@@ -18,18 +18,9 @@ ALERT_EMAILS = [
 ]
 
 # =============================================================================
-# THRESHOLDS - Alert when metric gets within PROXIMITY_PERCENT of these values
-# (YouTube video views are handled separately with per-video checkpoint rules)
+# Follower metrics (YouTube, Instagram, Facebook) use checkpoint rules:
+# Under 1M: every 100k, notify when 5k left. Over 1M: every 1M, notify when 15k left.
 # =============================================================================
-THRESHOLDS = {
-    "youtube_subscribers": 100_000,    # e.g., 100K subscribers
-    "instagram_followers": 50_000,     # e.g., 50K followers
-    "facebook_followers": 25_000,      # e.g., 25K followers
-    "spotify_listeners": 500_000,      # e.g., 500K monthly listeners
-}
-
-# How close (as percentage, 0-100) before sending alert. e.g., 10 = alert at 90% of threshold
-PROXIMITY_PERCENT = 10
 
 # =============================================================================
 # PLATFORM IDs - Your channel/page/artist identifiers
@@ -43,9 +34,8 @@ YOUTUBE_VIDEOS = [
     {"id": "_kqhp2PwXQM", "title": "You know"},
     {"id": "X-atPgZWZHo", "title": "Lonely in Dalat"},
 ]
-INSTAGRAM_USER_ID = "2041951224"            # Instagram Business/Creator account ID (from Meta)
-FACEBOOK_PAGE_ID = "100063766702292"             # Facebook Page ID
-SPOTIFY_ARTIST_ID = ""            # Spotify artist ID (from artist URL)
+INSTAGRAM_USER_ID = "2041951224"
+FACEBOOK_PAGE_ID = "100063766702292"
 
 # =============================================================================
 # EMAIL (SMTP) SETTINGS - For sending alerts
@@ -62,8 +52,6 @@ ALERT_FROM_EMAIL = os.getenv("ALERT_FROM_EMAIL", SMTP_USER)
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY", "")
 INSTAGRAM_ACCESS_TOKEN = os.getenv("INSTAGRAM_ACCESS_TOKEN", "")
 FACEBOOK_ACCESS_TOKEN = os.getenv("FACEBOOK_ACCESS_TOKEN", "")
-SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID", "")
-SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET", "")
 
 # =============================================================================
 # SCHEDULE - How often to check (in minutes)

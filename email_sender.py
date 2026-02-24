@@ -11,11 +11,9 @@ import config
 
 # Friendly names for metrics in emails
 METRIC_NAMES = {
-    "youtube_views": "YouTube video views",
     "youtube_subscribers": "YouTube subscribers",
     "instagram_followers": "Instagram followers",
     "facebook_followers": "Facebook followers",
-    "spotify_listeners": "Spotify monthly listeners",
 }
 
 
