@@ -6,6 +6,7 @@ import config
 import requests
 
 
+'''
 def fetch_instagram_followers() -> int | None:
     """
     Fetch follower count for the configured Instagram Business/Creator account.
@@ -25,3 +26,4 @@ def fetch_instagram_followers() -> int | None:
         return int(data.get("followers_count", 0))
     except Exception:
         return None
+'''

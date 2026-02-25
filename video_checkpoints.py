@@ -21,7 +21,8 @@ class CheckpointAlert(NamedTuple):
 
 def is_new_video(published_at: datetime) -> bool:
     """True if video was published today (UTC)."""
-    today = datetime.now(timezone.utc).date()
+    # For testing: set today as February 1st, 2026
+    today = datetime(2026, 2, 1, tzinfo=timezone.utc).date()
     pub_date = published_at.date()
     return pub_date >= today
 
@@ -33,26 +34,38 @@ def get_next_checkpoint(views: int, is_new: bool) -> CheckpointAlert | None:
     """
     if is_new:
         milestones = [100_000, 500_000, 1_000_000]
-        milestones.extend(i * 1_000_000 for i in range(2, 51))  # up to 50M
+        milestones.extend(i * 1_000_000 for i in range(2, 20))  # 2M to 19M
+        # From 20M to 99M, every 5M (20M, 25M, 30M...)
+        milestones.extend(i * 5_000_000 for i in range(4, 20))  # 20M to 95M
+        # From 100M onwards, every 10M (110M, 120M, 130M...)
+        milestones.extend(i * 10_000_000 for i in range(11, 100))  # 110M to 990M
         for m in milestones:
             if views < m:
-                proximity = 50_000 if m <= 1_000_000 else 100_000
+                proximity = 20_000 if m <= 1_000_000 else 100_000
                 return CheckpointAlert(m, proximity)
     else:
         if views < 1_000_000:
             for m in [100_000, 500_000, 1_000_000]:
                 if views < m:
-                    return CheckpointAlert(m, 50_000)
+                    return CheckpointAlert(m, 20_000)
         elif views < 10_000_000:
-            for m in range(1_000_000, 11_000_000, 1_000_000):
+            for m in range(1_000_000, 10_000_000, 1_000_000):
                 if views < m:
                     return CheckpointAlert(m, 100_000)
-        else:
-            m = 15_000_000
+        
+        if views >= 10_000_000 and views < 100_000_000:
+            m = 10_000_000
             while views >= m and m <= 100_000_000:
                 m += 5_000_000
             if views < m:
-                return CheckpointAlert(m, 200_000)
+                return CheckpointAlert(m, 100_000)
+        
+        if views >= 100_000_000:
+            m = 110_000_000
+            while views >= m and m <= 1_000_000_000:
+                m += 10_000_000
+            if views < m:
+                return CheckpointAlert(m, 100_000)
     return None
 
 

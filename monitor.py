@@ -1,7 +1,7 @@
 """
 Indigo Polaris Metrics Monitor
 
-Checks YouTube videos, subscribers, Instagram, and Facebook followers periodically.
+Checks YouTube videos, subscribers, Instagram, Facebook, and Spotify followers periodically.
 Sends email alerts when any metric gets close to its checkpoint.
 """
 
@@ -20,9 +20,10 @@ from followers_checkpoints import (
 )
 from fetchers import (
     fetch_facebook_followers,
-    fetch_instagram_followers,
+    #fetch_instagram_followers,
     fetch_youtube_subscribers,
     fetch_youtube_video_stats,
+    fetch_spotify_followers,
 )
 from video_checkpoints import (
     get_next_checkpoint,
@@ -90,12 +91,13 @@ def run_check() -> None:
                 else:
                     logger.warning(f"Failed to send alert for \"{title}\"")
 
-    # --- Follower metrics (YouTube, Instagram, Facebook) ---
+    # --- Follower metrics (YouTube, Instagram, Facebook, Spotify) ---
     # Checkpoints: under 1M = every 100k (5k left), over 1M = every 1M (15k left)
     fetchers = {
         "youtube_subscribers": fetch_youtube_subscribers,
-        "instagram_followers": fetch_instagram_followers,
+        #"instagram_followers": fetch_instagram_followers,
         "facebook_followers": fetch_facebook_followers,
+        "spotify_followers": fetch_spotify_followers,
     }
 
     for metric_key, fetch_fn in fetchers.items():

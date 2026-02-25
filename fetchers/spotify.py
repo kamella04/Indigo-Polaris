@@ -34,9 +34,9 @@ def _get_spotify_token() -> str | None:
         return None
 
 
-def fetch_spotify_listeners() -> int | None:
+def fetch_spotify_followers() -> int | None:
     """
-    Fetch monthly listeners for the configured Spotify artist.
+    Fetch follower count for the configured Spotify artist.
     Requires SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET.
     """
     if not config.SPOTIFY_ARTIST_ID:

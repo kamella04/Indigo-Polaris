@@ -1,6 +1,6 @@
 # Indigo Polaris Metrics Monitor
 
-An automated monitor that tracks YouTube views/subscribers, Instagram followers, and Facebook followers. When any metric gets close to its checkpoint, it sends an email alert to the listed recipients.
+An automated monitor that tracks YouTube views/subscribers, Instagram followers, Facebook followers, and Spotify followers. When any metric gets close to its checkpoint, it sends an email alert to the listed recipients.
 
 ## Setup
 
@@ -25,6 +25,7 @@ Copy `.env.example` to `.env` and fill in:
 - **YOUTUBE_API_KEY** – [Google Cloud Console](https://console.cloud.google.com/) → YouTube Data API v3
 - **INSTAGRAM_ACCESS_TOKEN** – [Meta for Developers](https://developers.facebook.com/)
 - **FACEBOOK_ACCESS_TOKEN** – Same Meta developer setup
+- **SPOTIFY_CLIENT_ID** / **SPOTIFY_CLIENT_SECRET** – [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
 
 ### 4. Run the monitor
 
@@ -57,7 +58,7 @@ View alerts use different rules based on publish date:
 - **YouTube** – Enable YouTube Data API v3 in Google Cloud and create an API key.
 - **Instagram** – Requires an Instagram Business or Creator account linked to a Meta App.
 - **Facebook** – Requires a Page access token with `pages_read_engagement`.
-- **Spotify** – Removed for now; may revisit after 1M monthly listeners.
+- **Spotify** – Artist follower count via Web API (Client ID + Secret). Works for any public artist.
 
 ## Example alert
 
