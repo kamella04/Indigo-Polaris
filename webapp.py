@@ -8,6 +8,7 @@ Local website: daily YouTube views per video and day-over-day growth.
 
 from __future__ import annotations
 
+import os
 from datetime import date, timedelta
 
 from flask import Flask, render_template
@@ -67,4 +68,7 @@ def index():
 
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    host = os.getenv("HOST", "0.0.0.0")
+    port = int(os.getenv("PORT", "5000"))
+    debug = os.getenv("FLASK_DEBUG", "0") == "1"
+    app.run(host=host, port=port, debug=debug)
