@@ -62,6 +62,7 @@ YOUTUBE_VIDEOS = [
     {"id": "CNirp2pEodU", "title": "Thiêu Thân"},
     {"id": "XQkze4rQMsU", "title": "Sớm muộn thì"},
     {"id": "6mUZN9YArv8", "title": "Like A Horse"},
+    {"id": "SNPzgbhgyPM", "title": "HỌ NÓI"},
 ]
 
 INSTAGRAM_USER_ID = "2041951224"
