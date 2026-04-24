@@ -5,3 +5,4 @@ __pycache__/
 .venv/
 venv/
 .env.local
+data/youtube_daily_history.json

@@ -27,15 +27,42 @@ Copy `.env.example` to `.env` and fill in:
 - **FACEBOOK_ACCESS_TOKEN** – Same Meta developer setup
 - **SPOTIFY_CLIENT_ID** / **SPOTIFY_CLIENT_SECRET** – [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
 
-### 4. Run the monitor
+### 4. Spotify: redirect URI (dashboard only)
+
+This project uses the **Client Credentials** flow for Spotify, so you do not log in in a browser and you do not need a real redirect URL. If the Spotify app form requires **Redirect URIs**, add a placeholder, for example:
+
+- `http://127.0.0.1:8888/callback`
+
+### 5. Run the email monitor
 
 ```bash
+cd path/to/Indigo-Polaris
 python monitor.py
 ```
 
 It checks metrics every `CHECK_INTERVAL_MINUTES` (default: 60). Alerts are sent only once per metric/threshold to avoid spam.
 
-## Follower Checkpoint Rules (YouTube, Instagram, Facebook)
+### 6. Daily YouTube view history + website
+
+1. Once per day (e.g. end of day), record view counts. This appends a row per video for **today** in `data/youtube_daily_history.json`:
+
+   ```bash
+   python record_daily_snapshot.py
+   ```
+
+2. View the table (current views, growth vs previous day and vs 7 days ago):
+
+   ```bash
+   python webapp.py
+   ```
+
+   Open **http://127.0.0.1:5000** in your browser.
+
+3. On Windows, use **Task Scheduler** to run `record_daily_snapshot.py` at a time you consider “end of day” (e.g. 23:55) so each calendar day has one snapshot.
+
+Remove `data/youtube_daily_history.json` from `.gitignore` if you want to commit that file (it is ignored by default).
+
+## Follower Checkpoint Rules (YouTube, Instagram, Facebook, Spotify)
 
 - **Under 1M:** milestones every 100k (100k, 200k... 1M), notify when **5k** left
 - **Over 1M:** milestones every 1M (1M, 2M, 3M...), notify when **15k** left

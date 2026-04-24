@@ -48,7 +48,6 @@ YOUTUBE_VIDEOS = [
     {"id": "PprzEeogfQM", "title": "TANTHE - Official Lyric Video"},
     {"id": "21I0ijEEp_Y", "title": "CHUYẾN BAY - Official Lyric Video"},
     {"id": "P8dDhlax17A", "title": "TÌNH YÊU LÀ QUÃNG ĐƯỜNG TA ĐI - Official Lyric Video"},
-    {"id": "YO6FSdStYUc", "title": "EM À - Official Lyric Video"},
     {"id": "_o2HdllsaxU", "title": "THE WAY I CALL YOU - Official Lyric Video"},
     {"id": "5NwoDz01mRU", "title": "LOVE PAIN - Official Lyric Video"},
     {"id": "yh2h_YwILII", "title": "CHÚ ĐẠI BI (VÔ LƯỢNG)"},

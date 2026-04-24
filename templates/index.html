@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Indigo Polaris – Daily YouTube views</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --panel: #1a222c;
+      --text: #e7ecf1;
+      --muted: #8b9aad;
+      --accent: #3d8fd1;
+      --pos: #3ecf8e;
+      --neg: #e06c75;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    header {
+      background: var(--panel);
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid #243040;
+    }
+    header h1 { font-size: 1.25rem; font-weight: 600; margin: 0 0 0.25rem; }
+    header p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+    main { padding: 1.5rem; max-width: 1200px; margin: 0 auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.65rem 0.75rem;
+      border-bottom: 1px solid #243040;
+    }
+    th {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    tr:hover td { background: #151c24; }
+    a.video-link { color: var(--accent); text-decoration: none; }
+    a.video-link:hover { text-decoration: underline; }
+    .num { text-align: right; font-variant-numeric: tabular-nums; }
+    .delta-pos { color: var(--pos); }
+    .delta-neg { color: var(--neg); }
+    .empty {
+      color: var(--muted);
+      padding: 2rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Daily YouTube views</h1>
+    <p>Tracked videos from config. Run <code>python record_daily_snapshot.py</code> once per day (e.g. before midnight).</p>
+    {% if last_run %}
+    <p>Last snapshot run: <strong>{{ last_run }}</strong></p>
+    {% endif %}
+  </header>
+  <main>
+    {% if rows %}
+    <table>
+      <thead>
+        <tr>
+          <th>Video</th>
+          <th class="num">Views (end of that day)</th>
+          <th>Snapshot date</th>
+          <th class="num">vs previous day</th>
+          <th class="num">vs 7 days earlier</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in rows %}
+        <tr>
+          <td>
+            <a class="video-link" href="https://youtu.be/{{ r.video_id }}" target="_blank" rel="noopener">{{ r.title }}</a>
+          </td>
+          <td class="num">{{ "{:,}".format(r.views) }}</td>
+          <td>{{ r.latest_date }}</td>
+          <td class="num">
+            {% if r.growth_1d is not none %}
+              {% if r.growth_1d > 0 %}
+                <span class="delta-pos">+{{ "{:,}".format(r.growth_1d) }}</span>
+              {% elif r.growth_1d < 0 %}
+                <span class="delta-neg">{{ "{:,}".format(r.growth_1d) }}</span>
+              {% else %}
+                0
+              {% endif %}
+            {% else %}
+              <span class="delta-neg">—</span>
+            {% endif %}
+          </td>
+          <td class="num">
+            {% if r.growth_7d is not none %}
+              {% if r.growth_7d > 0 %}
+                <span class="delta-pos">+{{ "{:,}".format(r.growth_7d) }}</span>
+              {% elif r.growth_7d < 0 %}
+                <span class="delta-neg">{{ "{:,}".format(r.growth_7d) }}</span>
+              {% else %}
+                0
+              {% endif %}
+            {% else %}
+              <span class="delta-neg">—</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="empty">No data yet. Run <code>python record_daily_snapshot.py</code> after configuring YouTube in <code>.env</code> and <code>config.py</code>.</p>
+    {% endif %}
+  </main>
+</body>
+</html>
