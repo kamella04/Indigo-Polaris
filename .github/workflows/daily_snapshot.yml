@@ -5,7 +5,7 @@ on:
   schedule:
     # GitHub Actions cron is always UTC. Default: 23:59 UTC daily.
     # Example for 23:59 in Vietnam (UTC+7): use "59 16 * * *" instead.
-    - cron: "59 23 * * *"
+    - cron: "59 16 * * *"
 
 concurrency:
   group: daily-snapshot
