@@ -3,8 +3,13 @@ name: Daily YouTube snapshot
 on:
   workflow_dispatch:
   schedule:
-    # Runs at 23:59 UTC daily. Adjust if you want a different timezone.
+    # GitHub Actions cron is always UTC. Default: 23:59 UTC daily.
+    # Example for 23:59 in Vietnam (UTC+7): use "59 16 * * *" instead.
     - cron: "59 23 * * *"
+
+concurrency:
+  group: daily-snapshot
+  cancel-in-progress: true
 
 permissions:
   contents: write

@@ -58,9 +58,22 @@ It checks metrics every `CHECK_INTERVAL_MINUTES` (default: 60). Alerts are sent 
 
    Open **http://127.0.0.1:5000** in your browser.
 
-3. On Windows, use **Task Scheduler** to run `record_daily_snapshot.py` at a time you consider “end of day” (e.g. 23:55) so each calendar day has one snapshot.
+3. **On Windows locally**, you can use **Task Scheduler** to run `record_daily_snapshot.py` at a time you consider “end of day” (e.g. 23:55).
 
-Remove `data/youtube_daily_history.json` from `.gitignore` if you want to commit that file (it is ignored by default).
+### 7. Cloud: daily snapshot (GitHub Actions) + Render
+
+The data file `data/youtube_daily_history.json` is versioned in git so the **Render** site can show history after each update.
+
+1. In GitHub: **Settings** → **Secrets and variables** → **Actions** → **New repository secret**
+   - Add **`YOUTUBE_API_KEY`** (same value as in your local `.env`).
+
+2. In GitHub: **Actions** → enable workflows if asked.
+
+3. The workflow **“Daily YouTube snapshot”** (`.github/workflows/daily_snapshot.yml`) runs on a **schedule** (GitHub uses **UTC**). The default is **23:59 UTC** daily. To match “end of day” in your timezone, edit the `cron` line in that file (for example, **23:59 in Vietnam, UTC+7** ≈ `59 16 * * *`).
+
+4. **Test once**: **Actions** → **Daily YouTube snapshot** → **Run workflow**.
+
+5. In **Render**, turn on **auto deploy** for branch `main` so each new commit from the workflow rebuilds the site and the dashboard shows fresh numbers.
 
 ## Follower Checkpoint Rules (YouTube, Instagram, Facebook, Spotify)
 
