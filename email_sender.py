@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import logging
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 import config
 
+logger = logging.getLogger(__name__)
 
 # Friendly names for metrics in emails
 METRIC_NAMES = {
@@ -26,6 +28,12 @@ def send_video_alert(
     Returns True if sent successfully.
     """
     if not config.SMTP_USER or not config.SMTP_PASSWORD or not config.ALERT_EMAILS:
+        logger.warning(
+            "Email alert skipped because SMTP config is incomplete: user=%s password=%s recipients=%s",
+            bool(config.SMTP_USER),
+            bool(config.SMTP_PASSWORD),
+            bool(config.ALERT_EMAILS),
+        )
         return False
 
     subject = f"Indigo Polaris: \"{video_title}\" approaching {target_views:,} views!"
@@ -57,7 +65,8 @@ def send_video_alert(
                 msg.as_string(),
             )
         return True
-    except Exception:
+    except Exception as exc:
+        logger.exception("Failed to send video alert email")
         return False
 
 
@@ -67,6 +76,12 @@ def send_alert(metric_key: str, current_value: int, threshold: int) -> bool:
     Returns True if sent successfully.
     """
     if not config.SMTP_USER or not config.SMTP_PASSWORD or not config.ALERT_EMAILS:
+        logger.warning(
+            "Email alert skipped because SMTP config is incomplete: user=%s password=%s recipients=%s",
+            bool(config.SMTP_USER),
+            bool(config.SMTP_PASSWORD),
+            bool(config.ALERT_EMAILS),
+        )
         return False
 
     metric_name = METRIC_NAMES.get(metric_key, metric_key)
@@ -98,5 +113,6 @@ def send_alert(metric_key: str, current_value: int, threshold: int) -> bool:
                 msg.as_string(),
             )
         return True
-    except Exception:
+    except Exception as exc:
+        logger.exception("Failed to send metric alert email")
         return False

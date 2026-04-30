@@ -59,6 +59,9 @@ def save_sent_alert(alert_key: tuple) -> None:
 
 def run_check() -> None:
     """Fetch all metrics, check thresholds, and send alerts if needed."""
+    logger.info(f"SMTP host: {config.SMTP_HOST}")
+    logger.info(f"SMTP user configured: {'yes' if config.SMTP_USER else 'no'}")
+    logger.info(f"ALERT_FROM_EMAIL configured: {'yes' if config.ALERT_FROM_EMAIL else 'no'}")
     sent_alerts = load_sent_alerts()
 
     # --- YouTube videos (per-video checkpoint logic) ---
@@ -131,6 +134,9 @@ def main() -> None:
     logger.info("Indigo Polaris Metrics Monitor started")
     logger.info(f"Check interval: {config.CHECK_INTERVAL_MINUTES} minutes")
     logger.info(f"Recipients: {config.ALERT_EMAILS}")
+    logger.info(f"SMTP host: {config.SMTP_HOST}")
+    logger.info(f"SMTP user configured: {'yes' if config.SMTP_USER else 'no'}")
+    logger.info(f"ALERT_FROM_EMAIL configured: {'yes' if config.ALERT_FROM_EMAIL else 'no'}")
     logger.info(f"Tracking {len(getattr(config, 'YOUTUBE_VIDEOS', []) or [])} YouTube videos")
 
     while True:

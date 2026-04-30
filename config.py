@@ -76,7 +76,7 @@ SMTP_HOST = os.getenv("SMTP_HOST", "smtp.gmail.com")
 SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
 SMTP_USER = os.getenv("SMTP_USER", "")      # Your email
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")  # App password, not regular password
-ALERT_FROM_EMAIL = os.getenv("ALERT_FROM_EMAIL", SMTP_USER)
+ALERT_FROM_EMAIL = os.getenv("ALERT_FROM_EMAIL") or SMTP_USER
 
 # =============================================================================
 # API KEYS - Load from environment variables (never commit real keys!)
