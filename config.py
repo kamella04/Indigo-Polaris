@@ -13,7 +13,7 @@ load_dotenv()
 # RECIPIENT EMAILS - Who receives the alerts
 # =============================================================================
 ALERT_EMAILS = [
-    "kamhoang04@gmail.com",  # Replace with email(s) that should receive alerts
+    "indigopolaris07@gmail.com",  # Replace with email(s) that should receive alerts
 ]
 
 # =============================================================================
